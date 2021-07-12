@@ -1,3 +1,3 @@
 <template>
-  <div>search</div>
+  <div>搜索页面</div>
 </template>
