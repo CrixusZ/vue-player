@@ -253,17 +253,19 @@ function registerSingerList(app) {
       if (data.code === ERR_OK) {
         // 处理歌手列表数据
         const singerList = data.singerList.data.singerlist;
+        console.log(data);
 
         // 构造歌手 Map 数据结构
         const singerMap = {
           hot: {
             title: HOT_NAME,
-            list: map(singerList.slice(0, 10)),
+            list: mapList(singerList.slice(0, 10)),
           },
         };
 
         singerList.forEach((item) => {
           // 把歌手名转成拼音
+          console.log(item);
           const p = pinyin(item.singer_name);
           if (!p || !p.length) {
             return;
@@ -278,7 +280,7 @@ function registerSingerList(app) {
               };
             }
             // 每个字母下面会有多名歌手
-            singerMap[key].list.push(map([item])[0]);
+            singerMap[key].list.push(mapList([item])[0]);
           }
         });
 
@@ -314,7 +316,7 @@ function registerSingerList(app) {
   });
 
   // 做一层数据映射，构造单个 singer 数据结构
-  function map(singerList) {
+  function mapList(singerList) {
     return singerList.map((item) => {
       return {
         id: item.singer_id,

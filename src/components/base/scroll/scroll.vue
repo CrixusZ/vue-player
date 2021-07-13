@@ -15,12 +15,18 @@ export default {
       type: Boolean,
       default: true,
     },
+    probeType: {
+      type: Number,
+      default: 0,
+    },
   },
-  setup(props) {
+  emits: ["scroll"],
+  setup(props, { emit }) {
     const rootRef = ref(null);
-    useScoll(rootRef, props);
+    const scroll = useScoll(rootRef, props, emit);
     return {
       rootRef,
+      scroll,
     };
   },
 };
