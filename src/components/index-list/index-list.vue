@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <scroll class="index-list" :probe-type="3" @scroll="onScroll" ref="scrollRef">
     <ul ref="groupRef">
@@ -47,6 +48,7 @@ import useShortcut from "./use-shortcut";
 export default {
   name: "index-list",
   components: { Scroll },
+  emits: ["select"],
   props: {
     data: {
       type: Array,
@@ -55,7 +57,7 @@ export default {
       },
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { groupRef, onScroll, fixedTitle, fixedStyle, currentIndex } =
       useFixed(props);
     const {
@@ -64,7 +66,12 @@ export default {
       scrollRef,
       onShortcutTouchMove,
     } = useShortcut(props, groupRef);
+    function onItemClick(item) {
+      console.log(item);
+      emit("select", item);
+    }
     return {
+      onItemClick,
       groupRef,
       onScroll,
       fixedTitle,
