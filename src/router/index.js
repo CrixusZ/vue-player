@@ -21,8 +21,8 @@ const routes = [
       {
         path: ":id",
         component: SingerDetail,
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/top-list",
