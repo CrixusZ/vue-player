@@ -1,4 +1,6 @@
 export function shuffle(source) {
+  console.log(source)
+  // 工具函数不要修改原本的传参，可以拷贝一份进行操作
   const arr = source.slice();
   for (let i = 0; i < arr.length; i++) {
     const j = getRandomInt(i);

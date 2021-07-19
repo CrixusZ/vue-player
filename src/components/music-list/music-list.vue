@@ -17,11 +17,12 @@
       class="list"
       :style="scrollStyle"
       v-loading="loading"
+      v-no-result:[noResultText]="noResult"
       :probe-type="3"
       @scroll="onScroll"
     >
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list :songs="songs" @select="selectItem"></song-list>
       </div>
     </scroll>
   </div>
@@ -30,6 +31,7 @@
 <script>
 import SongList from "@/components/base/song-list/song-list";
 import Scroll from "../../components/base/scroll/scroll";
+import { mapActions } from "vuex";
 
 const RESERVED_HEIGHT = 40;
 
@@ -46,6 +48,10 @@ export default {
         return [];
       },
     },
+    noResultText: {
+      type: String,
+      default: "抱歉,没有找到可播放的歌曲",
+    },
     title: String,
     pic: String,
     loading: Boolean,
@@ -58,6 +64,9 @@ export default {
     };
   },
   computed: {
+    noResult() {
+      return !this.loading && !this.songs.length;
+    },
     bgImageStyle() {
       const scrollY = this.scrollY;
       let zIndex = 0;
@@ -103,6 +112,15 @@ export default {
         backdropFilter: `blur(${blur}px)`,
       };
     },
+    playBtnStyle() {
+      let display = "";
+      if (this.scrollY >= this.maxTranslateY) {
+        display = "none";
+      }
+      return {
+        display,
+      };
+    },
   },
   mounted() {
     console.log(this.$refs.bgImage.clientHeight);
@@ -116,6 +134,18 @@ export default {
     onScroll(pos) {
       this.scrollY = -pos.y;
     },
+    selectItem({ song, index }) {
+      console.log(song);
+      console.log(index);
+      this.selectPlay({
+        list: this.songs,
+        index: index,
+      });
+    },
+    random() {
+      this.randomPlay(this.songs);
+    },
+    ...mapActions(["selectPlay", "randomPlay"]),
   },
 };
 </script>

@@ -9,6 +9,8 @@ export default function createLoadingLikeDirective(Comp) {
       const app = createApp(Comp);
       const instance = app.mount(document.createElement("div"));
       const name = Comp.name;
+      console.log(el);
+      console.log(name);
       if (!el[name]) {
         el[name] = {};
       }
