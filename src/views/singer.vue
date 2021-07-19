@@ -29,7 +29,7 @@ export default {
   async created() {
     const res = await getSingerList();
     this.singers = res.singers;
-    console.log(res);
+    // console.log(res);
   },
   methods: {
     selectSinger(singer) {

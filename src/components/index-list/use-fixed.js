@@ -49,7 +49,7 @@ export default function useFixed(props) {
 
   function calculate() {
     const list = groupRef.value.children;
-    console.log(list);
+    // console.log(list);
     const listHeightsVal = listHeights.value;
     let height = 0;
     listHeightsVal.length = 0;
