@@ -12,6 +12,20 @@
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
       <div class="bottom">
+        <div class="progress-wrapper">
+          <span class="time time-l">{{ formatTime(currentTime) }}</span>
+          <div class="progress-bar-wrapper">
+            <progress-bar
+              ref="barRef"
+              :progress="progress"
+              @progress-changing="onProgressChanging"
+              @progress-changed="onProgressChanged"
+            ></progress-bar>
+          </div>
+          <span class="time time-r">{{
+            formatTime(currentSong.duration)
+          }}</span>
+        </div>
         <div class="operators">
           <div class="icon i-left">
             <i @click="changeMode" :class="modeIcon"></i>
@@ -26,7 +40,10 @@
             <i @click="next" class="icon-next"></i>
           </div>
           <div class="icon i-right">
-            <i class="icon-not-favorite"></i>
+            <i
+              @click="toggleFavorite(currentSong)"
+              :class="getFavoriteIcon(currentSong)"
+            ></i>
           </div>
         </div>
       </div>
@@ -36,6 +53,8 @@
       @pause="pause"
       @canplay="ready"
       @error="error"
+      @timeupdate="updateTime"
+      @ended="end"
     ></audio>
   </div>
 </template>
@@ -43,23 +62,34 @@
 <script>
 import { useStore } from "vuex";
 import { computed, watch, ref } from "vue";
-import useMode from "./use-mode"
+import useMode from "./use-mode";
+import useFavorite from "./use-favorite";
+import ProgressBar from "./progress-bar";
+import { formatTime } from "../../assets/js/util";
+import { PLAY_MODE } from "../../assets/js/constant";
 
 export default {
   name: "player",
+  components: {
+    ProgressBar,
+  },
   setup() {
     // data
     const songReady = ref(false);
     const audioRef = ref(null);
+    const currentTime = ref(0);
+    let progressChangeing = false;
     // vuex
     const store = useStore();
     const fullScreen = computed(() => store.state.fullScreen);
     const currentSong = computed(() => store.getters.currentSong);
     const playing = computed(() => store.state.playing);
     const currentIndex = computed(() => store.state.currentIndex);
+    const playMode = computed(() => store.state.playMode);
     const playList = computed(() => store.state.playList);
     // hooks
     const { modeIcon, changeMode } = useMode();
+    const { getFavoriteIcon, toggleFavorite } = useFavorite();
     // computed
     const playIcon = computed(() => {
       return playing.value ? "icon-pause" : "icon-play";
@@ -67,11 +97,16 @@ export default {
     const disableCls = computed(() => {
       return songReady.value ? "" : "disable";
     });
+    const progress = computed(() => {
+      return currentTime.value / currentSong.value.duration;
+    });
     // watch
+    // 选择歌曲
     watch(currentSong, (newSong) => {
       if (!newSong.id || !newSong.url) {
         return;
       }
+      currentTime.value = 0;
       songReady.value = false;
       const audioEl = audioRef.value;
       audioEl.src = newSong.url;
@@ -137,6 +172,7 @@ export default {
       const audioEl = audioRef.value;
       audioEl.currentTime = 0;
       audioEl.play();
+      store.commit("setPlayingStats", true);
     }
     function ready() {
       if (songReady.value) {
@@ -147,22 +183,59 @@ export default {
     function error() {
       songReady.value = true;
     }
+    function updateTime(e) {
+      if (!progressChangeing) {
+        currentTime.value = e.target.currentTime;
+      }
+    }
+    function onProgressChanging(progress) {
+      progressChangeing = true;
+      currentTime.value = currentSong.value.duration * progress;
+    }
+
+    function onProgressChanged(progress) {
+      progressChangeing = false;
+      audioRef.value.currentTime = currentTime.value =
+        currentSong.value.duration * progress;
+      if (!playing.value) {
+        store.commit("setPlayingState", true);
+      }
+    }
+
+    function end() {
+      currentTime.value = 0;
+      if (playMode.value === PLAY_MODE.loop) {
+        loop();
+      } else {
+        next();
+      }
+    }
     return {
       fullScreen,
       currentSong,
+      currentTime,
       audioRef,
       goBack,
       playIcon,
       togglePlay,
+      progress,
+      updateTime,
       pause,
       prev,
       next,
       ready,
+      onProgressChanging,
+      onProgressChanged,
       disableCls,
+      formatTime,
       error,
+      end,
       // mode
       modeIcon,
       changeMode,
+      // favorite
+      getFavoriteIcon,
+      toggleFavorite,
     };
   },
 };

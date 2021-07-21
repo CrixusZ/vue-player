@@ -10,6 +10,7 @@ function inertArray(arr, val, compare, maxLen) {
   }
   arr.unshift(val);
   if (maxLen && arr.length > maxLen) {
+    // 删除数组的最后一个元素
     arr.pop();
   }
 }

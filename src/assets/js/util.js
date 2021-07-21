@@ -20,7 +20,9 @@ function swap(arr, i, j) {
 }
 
 export function formatTime(interval) {
+  console.log(interval);
   interval = interval | 0;
+  console.log(interval);
   const minute = (((interval / 60) | 0) + "").padStart(2, "0");
   const second = ((interval % 60) + "").padStart(2, "0");
   return `${minute}:${second}`;
