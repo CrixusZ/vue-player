@@ -22,8 +22,28 @@
                 :src="currentSong.pic"
               />
             </div>
+            <div class="playing-lyric-wrapper">
+              <div class="playing-lyric">{{ playingLyric }}</div>
+            </div>
           </div>
         </div>
+        <scroll class="middle-r" ref="lyricScollRef">
+          <div class="lyric-wrapper">
+            <div v-if="currentLyric" ref="lyricListRef">
+              <p
+                class="text"
+                :class="{ current: currentLineNum === index }"
+                v-for="(line, index) in currentLyric.lines"
+                :key="line.num"
+              >
+                {{ line.txt }}
+              </p>
+            </div>
+            <div class="pure-music" v-show="pureMusicLyric">
+              <p>{{ pureMusicLyric }}</p>
+            </div>
+          </div>
+        </scroll>
       </div>
       <div class="bottom">
         <div class="progress-wrapper">
@@ -76,6 +96,7 @@
 <script>
 import { useStore } from "vuex";
 import { computed, watch, ref } from "vue";
+import Scroll from "../base/scroll/scroll";
 import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
 import useCd from "./use-cd";
@@ -88,6 +109,7 @@ export default {
   name: "player",
   components: {
     ProgressBar,
+    Scroll,
   },
   setup() {
     // data
@@ -107,7 +129,19 @@ export default {
     const { modeIcon, changeMode } = useMode();
     const { getFavoriteIcon, toggleFavorite } = useFavorite();
     const { cdCls, cdRef, cdImgRef } = useCd();
-    useLyric();
+    const {
+      currentLyric,
+      currentLineNum,
+      pureMusicLyric,
+      playingLyric,
+      playLyric,
+      lyricScollRef,
+      lyricListRef,
+      stopLyric,
+    } = useLyric({
+      songReady,
+      currentTime,
+    });
     // computed
     const playIcon = computed(() => {
       return playing.value ? "icon-pause" : "icon-play";
@@ -135,7 +169,14 @@ export default {
         return;
       }
       const audioEl = audioRef.value;
-      newPlaying ? audioEl.play() : audioEl.pause();
+      if (newPlaying) {
+        audioEl.play();
+        playLyric();
+      } else {
+        audioEl.pause();
+        stopLyric();
+      }
+      // newPlaying ? audioEl.play() : audioEl.pause();
     });
     // methods
     function goBack() {
@@ -197,6 +238,7 @@ export default {
         return;
       }
       songReady.value = true;
+      playLyric();
     }
     function error() {
       songReady.value = true;
@@ -209,6 +251,8 @@ export default {
     function onProgressChanging(progress) {
       progressChangeing = true;
       currentTime.value = currentSong.value.duration * progress;
+      playLyric();
+      stopLyric();
     }
 
     function onProgressChanged(progress) {
@@ -218,6 +262,7 @@ export default {
       if (!playing.value) {
         store.commit("setPlayingState", true);
       }
+      playLyric();
     }
 
     function end() {
@@ -258,6 +303,14 @@ export default {
       cdCls,
       cdRef,
       cdImgRef,
+      // lyric
+      currentLineNum,
+      currentLyric,
+      lyricScollRef,
+      lyricListRef,
+      stopLyric,
+      pureMusicLyric,
+      playingLyric,
     };
   },
 };
@@ -329,6 +382,7 @@ export default {
       font-size: 0;
       .middle-l {
         display: inline-block;
+        // display: none;
         vertical-align: top;
         position: relative;
         width: 100%;

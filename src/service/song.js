@@ -23,7 +23,7 @@ export function processSongs(songs) {
   });
 }
 
-const lyricMap = {}
+const lyricMap = {};
 
 export function getLyric(song) {
   if (song.lyric) {
@@ -32,7 +32,7 @@ export function getLyric(song) {
   const mid = song.mid;
   const lyric = lyricMap[mid];
   if (lyric) {
-    return Promise.resolve(lyric)
+    return Promise.resolve(lyric);
   }
   return get("/api/getLyric", {
     mid,

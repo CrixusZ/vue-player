@@ -27,7 +27,7 @@ export function changeMode({ commit, state, getters }, mode) {
   } else {
     commit("setPlayList", state.sequenceList);
   }
-  console.log(state.playList)
+  console.log(state.playList);
   const index = state.playList.findIndex((song) => {
     return song.id === currentId;
   });

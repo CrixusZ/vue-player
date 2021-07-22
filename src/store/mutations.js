@@ -26,8 +26,8 @@ const mutations = {
         item.lyric = lyric;
       }
       return item;
-    })
-  }
+    });
+  },
 };
 
 export default mutations;
