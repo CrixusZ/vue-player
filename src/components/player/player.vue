@@ -46,6 +46,10 @@
         </scroll>
       </div>
       <div class="bottom">
+        <div class="dot-wrapper">
+          <span class="dot" :class="{'active':currentShow==='cd'}"></span>
+          <span class="dot" :class="{'active':currentShow==='lyric'}"></span>
+          </div>
         <div class="progress-wrapper">
           <span class="time time-l">{{ formatTime(currentTime) }}</span>
           <div class="progress-bar-wrapper">
