@@ -11,8 +11,13 @@
         <h1 class="title">{{ currentSong.name }}</h1>
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
-      <div class="middle">
-        <div class="middle-l">
+      <div
+        class="middle"
+        @touchstart.prevent="onMiddleTouchStart"
+        @touchmove.prevent="onMiddleTouchMove"
+        @touchend.prevent="onMiddleTouchEnd"
+      >
+        <div class="middle-l" :style="middleLStyle">
           <div ref="cdWrapperRef" class="cd-wrapper">
             <div ref="cdRef" class="cd">
               <img
@@ -27,7 +32,7 @@
             </div>
           </div>
         </div>
-        <scroll class="middle-r" ref="lyricScollRef">
+        <scroll class="middle-r" ref="lyricScollRef" :style="middleRStyle">
           <div class="lyric-wrapper">
             <div v-if="currentLyric" ref="lyricListRef">
               <p
@@ -49,7 +54,7 @@
         <div class="dot-wrapper">
           <span class="dot" :class="{'active':currentShow==='cd'}"></span>
           <span class="dot" :class="{'active':currentShow==='lyric'}"></span>
-          </div>
+        </div>
         <div class="progress-wrapper">
           <span class="time time-l">{{ formatTime(currentTime) }}</span>
           <div class="progress-bar-wrapper">
@@ -105,6 +110,7 @@ import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
 import useCd from "./use-cd";
 import useLyric from "./use-lyric";
+import useMiddleInteractive from "./use-middle-interactive";
 import ProgressBar from "./progress-bar";
 import { formatTime } from "../../assets/js/util";
 import { PLAY_MODE } from "../../assets/js/constant";
@@ -146,6 +152,14 @@ export default {
       songReady,
       currentTime,
     });
+    const {
+      onMiddleTouchStart,
+      onMiddleTouchMove,
+      onMiddleTouchEnd,
+      middleRStyle,
+      middleLStyle,
+      currentShow,
+    } = useMiddleInteractive();
     // computed
     const playIcon = computed(() => {
       return playing.value ? "icon-pause" : "icon-play";
@@ -315,6 +329,13 @@ export default {
       stopLyric,
       pureMusicLyric,
       playingLyric,
+      // middle
+      onMiddleTouchStart,
+      onMiddleTouchMove,
+      onMiddleTouchEnd,
+      middleRStyle,
+      middleLStyle,
+      currentShow,
     };
   },
 };
