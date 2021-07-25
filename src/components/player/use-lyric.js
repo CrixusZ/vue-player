@@ -41,8 +41,11 @@ export default function useLyric({ songReady, currentTime }) {
         playLyric();
       }
     } else {
-      console.log(lyric)
-      playingLyric.value = pureMusicLyric.value = lyric.replace(/\[(\d{2}):(\d{2}):(\d{2})\]/g, "");
+      console.log(lyric);
+      playingLyric.value = pureMusicLyric.value = lyric.replace(
+        /\[(\d{2}):(\d{2}):(\d{2})\]/g,
+        ""
+      );
     }
     console.log(pureMusicLyric);
   });
