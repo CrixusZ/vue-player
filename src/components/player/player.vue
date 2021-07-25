@@ -1,5 +1,5 @@
 <template>
-  <div class="player">
+  <div class="player" v-show="playList.length > 0">
     <div class="normal-player" v-show="fullScreen">
       <div class="background">
         <img :src="currentSong.pic" />
@@ -52,8 +52,8 @@
       </div>
       <div class="bottom">
         <div class="dot-wrapper">
-          <span class="dot" :class="{'active':currentShow==='cd'}"></span>
-          <span class="dot" :class="{'active':currentShow==='lyric'}"></span>
+          <span class="dot" :class="{ active: currentShow === 'cd' }"></span>
+          <span class="dot" :class="{ active: currentShow === 'lyric' }"></span>
         </div>
         <div class="progress-wrapper">
           <span class="time time-l">{{ formatTime(currentTime) }}</span>
@@ -91,6 +91,7 @@
         </div>
       </div>
     </div>
+    <mini-player :progress="progress" :togglePlay="togglePlay"></mini-player>
     <audio
       ref="audioRef"
       @pause="pause"
@@ -104,8 +105,9 @@
 
 <script>
 import { useStore } from "vuex";
-import { computed, watch, ref } from "vue";
+import { computed, watch, ref, nextTick } from "vue";
 import Scroll from "../base/scroll/scroll";
+import MiniPlayer from "./mini-player";
 import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
 import useCd from "./use-cd";
@@ -120,6 +122,7 @@ export default {
   components: {
     ProgressBar,
     Scroll,
+    MiniPlayer,
   },
   setup() {
     // data
@@ -127,6 +130,7 @@ export default {
     const audioRef = ref(null);
     const currentTime = ref(0);
     let progressChangeing = false;
+    const barRef = ref(null)
     // vuex
     const store = useStore();
     const fullScreen = computed(() => store.state.fullScreen);
@@ -196,6 +200,13 @@ export default {
       }
       // newPlaying ? audioEl.play() : audioEl.pause();
     });
+    // 数据变化到dom渲染需要一个nexttick，用异步
+    watch(fullScreen, async (newFullScreen) => {
+      if (newFullScreen) {
+        await nextTick();
+        barRef.value.setOffset(progress.value);
+      }
+    })
     // methods
     function goBack() {
       store.commit("setFullScreen", false);
@@ -297,8 +308,10 @@ export default {
       currentTime,
       audioRef,
       goBack,
+      barRef,
       playIcon,
       togglePlay,
+      playList,
       progress,
       updateTime,
       pause,
