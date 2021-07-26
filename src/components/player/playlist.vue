@@ -7,9 +7,9 @@
             <h1 class="title">
               <i class="icon" :class="modeIcon" @click="changeMode"> </i>
               <span class="text">{{ modeText }}</span>
-              <!-- <span class="clear" @click="showConfirm">
+              <span class="clear" @click="showConfirm">
                 <i class="icon-clear"></i>
-              </span> -->
+              </span>
             </h1>
           </div>
           <scroll ref="scrollRef" class="list-content">
@@ -22,16 +22,16 @@
               >
                 <i class="current" :class="getCurrentIcon(song)"></i>
                 <span class="text">{{ song.name }}</span>
-                <span class="favorite" @click="toggleFavorite(song)">
+                <span class="favorite" @click.stop="toggleFavorite(song)">
                   <i :class="getFavoriteIcon(song)"></i>
                 </span>
-                <!-- <span
+                <span
                   class="delete"
                   @click.stop="removeSong(song)"
                   :class="{ disable: removing }"
                 >
                   <i class="icon-delete"></i>
-                </span> -->
+                </span>
               </li>
             </transition-group>
           </scroll>
@@ -45,13 +45,13 @@
             <span>关闭</span>
           </div>
         </div>
-        <!-- <confirm
+        <confirm
           ref="confirmRef"
           @confirm="confirmClear"
           text="是否清空播放列表？"
           confirm-btn-text="清空"
         ></confirm>
-        <add-song ref="addSongRef"></add-song> -->
+        <!-- <add-song ref="addSongRef"></add-song> -->
       </div>
     </transition>
   </teleport>
@@ -59,7 +59,7 @@
 
 <script>
 import Scroll from "@/components/base/scroll/scroll";
-// import Confirm from "@/components/base/confirm/confirm";
+import Confirm from "@/components/base/confirm/confirm";
 // import AddSong from "@/components/add-song/add-song";
 import { ref, computed, nextTick, watch } from "vue";
 import { useStore } from "vuex";
@@ -70,7 +70,7 @@ export default {
   name: "playlist",
   components: {
     // AddSong,
-    // Confirm,
+    Confirm,
     Scroll,
   },
   setup() {
@@ -140,6 +140,7 @@ export default {
     }
 
     function removeSong(song) {
+      // 防止多次点击
       if (removing.value) {
         return;
       }
@@ -148,6 +149,7 @@ export default {
       if (!playList.value.length) {
         hide();
       }
+      // 动画是300毫秒,设置300毫秒的延迟
       setTimeout(() => {
         removing.value = false;
       }, 300);

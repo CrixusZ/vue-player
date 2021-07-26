@@ -4,7 +4,7 @@ import { shuffle } from "../assets/js/util";
 export function selectPlay({ commit }, { list, index }) {
   commit("setPlayMode", PLAY_MODE.sequence);
   commit("setSequenceList", list);
-  commit("setPlayingStats", true);
+  commit("setPlayingState", true);
   commit("setFullScreen", true);
   commit("setPlayList", list);
   commit("setCurrentIndex", index);
@@ -13,7 +13,7 @@ export function selectPlay({ commit }, { list, index }) {
 export function randomPlay({ commit }, list) {
   commit("setPlayMode", PLAY_MODE.random);
   commit("setSequenceList", list);
-  commit("setPlayingStats", true);
+  commit("setPlayingState", true);
   commit("setFullScreen", true);
   commit("setPlayList", shuffle(list));
   commit("setCurrentIndex", 0);
@@ -33,4 +33,43 @@ export function changeMode({ commit, state, getters }, mode) {
   });
   commit("setCurrentIndex", index);
   commit("setPlayMode", mode);
+}
+
+export function removeSong({ commit, state }, song) {
+  // 不能直接对state的数据修改,需要复制一份
+  const sequenceList = state.sequenceList.slice();
+  const playList = state.playList.slice();
+
+  const sequenceIndex = findIndex(sequenceList, song);
+  const playIndex = findIndex(playList, song);
+  if (sequenceIndex < 0 || playIndex < 0) {
+    return;
+  }
+
+  sequenceList.splice(sequenceIndex, 1);
+  playList.splice(playIndex, 1);
+
+  let currentIndex = state.currentIndex;
+  if (playIndex < currentIndex || currentIndex === playList.length) {
+    currentIndex--;
+  }
+
+  commit("setSequenceList", sequenceList);
+  commit("setPlayList", playList);
+  commit("setCurrentIndex", currentIndex);
+  if (!playList.length) {
+    commit("setPlayingState", false);
+  }
+}
+
+export function clearSongList({ commit }) {
+  commit("setSequenceList", []);
+  commit("setPlayList", []);
+  commit("setCurrentIndex", 0);
+  commit("setPlayingState", false);
+}
+function findIndex(list, song) {
+  return list.findIndex((item) => {
+    return item.id === song.id;
+  })
 }

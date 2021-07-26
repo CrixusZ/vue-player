@@ -196,6 +196,7 @@ export default {
       const audioEl = audioRef.value;
       audioEl.src = newSong.url;
       audioEl.play();
+      store.commit("setPlayingState", true);
     });
     watch(playing, (newPlaying) => {
       if (!songReady.value) {
@@ -226,10 +227,10 @@ export default {
       if (!songReady.value) {
         return;
       }
-      store.commit("setPlayingStats", !playing.value);
+      store.commit("setPlayingState", !playing.value);
     }
     function pause() {
-      store.commit("setPlayingStats", false);
+      store.commit("setPlayingState", false);
     }
     function prev() {
       let list = playList.value;
@@ -245,7 +246,7 @@ export default {
         }
         store.commit("setCurrentIndex", index);
         if (!playing.value) {
-          store.commit("setPlayingStats", true);
+          store.commit("setPlayingState", true);
         }
       }
     }
@@ -262,16 +263,16 @@ export default {
           index = 0;
         }
         store.commit("setCurrentIndex", index);
-        if (!playing.value) {
-          store.commit("setPlayingStats", true);
-        }
+        // if (!playing.value) {
+        //   store.commit("", true);
+        // }
       }
     }
     function loop() {
       const audioEl = audioRef.value;
       audioEl.currentTime = 0;
       audioEl.play();
-      store.commit("setPlayingStats", true);
+      store.commit("setPlayingState", true);
     }
     function ready() {
       if (songReady.value) {

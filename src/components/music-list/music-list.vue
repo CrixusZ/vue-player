@@ -30,8 +30,8 @@
 
 <script>
 import SongList from "@/components/base/song-list/song-list";
-import Scroll from "../../components/base/scroll/scroll";
-import { mapActions } from "vuex";
+import Scroll from "../../components/wrap-scroll";
+import { mapActions, mapState } from "vuex";
 
 const RESERVED_HEIGHT = 40;
 
@@ -95,8 +95,10 @@ export default {
       };
     },
     scrollStyle() {
+      const bottom = this.playList.length ? "60px" : "0";
       return {
         top: `${this.imageHeight}px`,
+        bottom,
       };
     },
     filterStyle() {
@@ -121,6 +123,8 @@ export default {
         display,
       };
     },
+    // mapState放在计算属性里面
+    ...mapState(["playList"]),
   },
   mounted() {
     console.log(this.$refs.bgImage.clientHeight);

@@ -1,5 +1,5 @@
 const mutations = {
-  setPlayingStats(state, playing) {
+  setPlayingState(state, playing) {
     state.playing = playing;
   },
   setSequenceList(state, list) {
