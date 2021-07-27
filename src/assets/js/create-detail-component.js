@@ -19,10 +19,14 @@ export default function createDetailComponent(name, key, fetch) {
       computedData() {
         let ret = null;
         const data = this.data;
+        console.log(data)
         if (data) {
           ret = data;
         } else {
           const cached = storage.session.get(key);
+          console.log("cached");
+          console.log(cached);
+          console.log(this.$route.params.id)
           if (
             cached &&
             (cached.mid || cached.id + "") === this.$route.params.id
@@ -30,6 +34,7 @@ export default function createDetailComponent(name, key, fetch) {
             ret = cached;
           }
         }
+        console.log(ret)
         return ret;
       },
       pic() {
