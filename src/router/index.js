@@ -3,6 +3,7 @@ import Recommend from "@/views/recommend";
 import Search from "@/views/search";
 import Singer from "@/views/singer";
 import TopList from "@/views/top-list";
+import TopDetail from "@/views/top-detail";
 import SingerDetail from "@/views/singer-detail";
 import Album from "@/views/album";
 
@@ -34,6 +35,12 @@ const routes = [
   {
     path: "/top-list",
     component: TopList,
+    children: [
+      {
+        path: ":id",
+        component: TopDetail,
+      }
+    ]
   },
   {
     path: "/search",
