@@ -917,6 +917,13 @@
   dependencies:
     "@better-scroll/core" "^2.4.1"
 
+"@better-scroll/pull-up@^2.4.1":
+  version "2.4.1"
+  resolved "http://47.112.121.146:8081/repository/npm-group-public/@better-scroll/pull-up/-/pull-up-2.4.1.tgz#7ee99c29582d069255036b051d25e4b81dc88348"
+  integrity sha512-6fq/uM6e0H/3ZBRimLXRzftXp1W2IE7LotooFtb7rIky4FSr+Yj6FxZrydvxiKQ5QZIE95tsw2qW924YszulgQ==
+  dependencies:
+    "@better-scroll/core" "^2.4.1"
+
 "@better-scroll/shared-utils@^2.4.1":
   version "2.4.1"
   resolved "http://47.112.121.146:8081/repository/npm-group-public/@better-scroll/shared-utils/-/shared-utils-2.4.1.tgz#b5e4e751a023180f1123d2c3773c75a863f71f77"

@@ -1,11 +1,12 @@
 <template>
   <div
+    ref="rootRef"
     class="suggest"
     v-loading:[loadingText]="loading"
     v-no-result:[noResultText]="noResult"
   >
     <ul class="suggest-list">
-      <li class="suggest-item" v-if="singer">
+      <li class="suggest-item" v-if="singer" @click="selectSinger">
         <div class="icon">
           <i class="icon-mine"></i>
         </div>
@@ -13,7 +14,12 @@
           <p class="text">{{ singer.name }}</p>
         </div>
       </li>
-      <li class="suggest-item" v-for="song in songs" :key="song.id">
+      <li
+        class="suggest-item"
+        v-for="song in songs"
+        :key="song.id"
+        @click="selectSong(song)"
+      >
         <div class="icon">
           <i class="icon-music"></i>
         </div>
@@ -21,14 +27,16 @@
           <p class="text">{{ song.singer }}-{{ song.name }}</p>
         </div>
       </li>
+      <div class="suggest-item" v-loading:[loadingText]="pullupLoading"></div>
     </ul>
   </div>
 </template>
 
 <script>
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, nextTick } from "vue";
 import { search } from "../../service/search";
 import { processSongs } from "../../service/song";
+import usePullUpLoad from "./use-pull-up-load";
 
 export default {
   name: "suggest",
@@ -39,7 +47,8 @@ export default {
       default: true,
     },
   },
-  setup(props) {
+  emits: ["select-song", "select-singer"],
+  setup(props, { emit }) {
     const singer = ref(null);
     const songs = ref([]);
     const hasMore = ref(true);
@@ -49,11 +58,25 @@ export default {
     const manualLoading = ref(false);
 
     const loading = computed(() => {
-      return !singer.value && !songs.value.length;
+      return isPullUpLoad.value && hasMore.value;
+      // return false;
     });
     const noResult = computed(() => {
       return !singer.value && !songs.value.length && !hasMore.value;
-    })
+    });
+
+    const preventPullUpload = computed(() => {
+      return loading.value || manualLoading.value;
+    });
+
+    const { scroll, isPullUpLoad, rootRef } = usePullUpLoad(
+      searchMore,
+      preventPullUpload
+    );
+    const pullupLoading = computed(() => {
+      return isPullUpLoad.value && hasMore.value;
+      // return false;
+    });
     // props.query不是响应式数据，是一个普通的字符串,需要经过一个getter函数处理
     watch(
       () => props.query,
@@ -78,15 +101,50 @@ export default {
       songs.value = await processSongs(result.songs);
       singer.value = result.singer;
       hasMore.value = result.hasMore;
+      await nextTick();
+      await makeItScrollable();
+    }
+
+    async function searchMore() {
+      if (!hasMore.value || !props.query) {
+        return;
+      }
+      page.value++;
+      const result = await search(props.query, page.value, props.showSinger);
+      songs.value = songs.value.concat(await processSongs(result.songs));
+      hasMore.value = result.hasMore;
+      await nextTick();
+      await makeItScrollable();
+    }
+
+    async function makeItScrollable() {
+      if (scroll.value.maxScrollY >= -1) {
+        manualLoading.value = true;
+        // await searchMore();
+        manualLoading.value = false;
+      }
+    }
+    function selectSong(song) {
+      emit("select-song", song);
+    }
+    function selectSinger(singer) {
+      emit("select-singer", singer);
     }
     return {
       singer,
       songs,
       loadingText,
+      pullupLoading,
       loading,
       noResultText,
       noResult,
+      selectSong,
+      selectSinger,
       manualLoading,
+      // pullUpload
+      rootRef,
+      isPullUpLoad,
+      scroll,
     };
   },
 };

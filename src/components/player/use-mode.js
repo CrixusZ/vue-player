@@ -21,7 +21,7 @@ export default function useMode() {
       : playModeVal === PLAY_MODE.random
       ? "随机播放"
       : "单曲循环";
-  })
+  });
   function changeMode() {
     const mode = (playMode.value + 1) % 3;
     store.dispatch("changeMode", mode);

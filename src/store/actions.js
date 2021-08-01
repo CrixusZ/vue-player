@@ -71,5 +71,27 @@ export function clearSongList({ commit }) {
 function findIndex(list, song) {
   return list.findIndex((item) => {
     return item.id === song.id;
-  })
+  });
+}
+
+export function addSong({ commit, state }, song) {
+  const playList = state.playList.slice();
+  const sequenceList = state.sequenceList.slice();
+  let curretIndex = state.curretIndex;
+  const playIndex = findIndex(playList, song);
+  if (playIndex > -1) {
+    curretIndex = playIndex;
+  } else {
+    playList.push(song);
+    curretIndex = playList.length - 1;
+  }
+  const sequenceIndex = findIndex(sequenceList, song);
+  if (sequenceIndex === -1) {
+    sequenceList.push(song);
+  }
+  commit("setSequenceList", sequenceList);
+  commit("setPlayList", playList);
+  commit("setCurrentIndex", curretIndex);
+  commit("setPlayingState", true);
+  commit("setFullScreen", true);
 }

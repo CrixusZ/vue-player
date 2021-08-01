@@ -19,8 +19,8 @@ const routes = [
       {
         path: ":id",
         component: Album,
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/singer",
@@ -39,12 +39,18 @@ const routes = [
       {
         path: ":id",
         component: TopDetail,
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/search",
     component: Search,
+    children: [
+      {
+        path: ":id",
+        component: SingerDetail,
+      },
+    ],
   },
 ];
 

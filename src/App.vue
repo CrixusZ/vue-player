@@ -21,10 +21,10 @@ export default {
       const bottom = this.playList.length ? "60px" : "0";
       return {
         bottom,
-      }
+      };
     },
     ...mapState(["playList"]),
-  }
+  },
 };
 </script>
 
