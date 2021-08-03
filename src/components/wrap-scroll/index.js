@@ -34,7 +34,7 @@ export default {
     const scrollRef = ref(null);
     // scroll实例初始化未null,防止渲染前return出去加上计算属性保证获取意渲染的scroll实例
     const scroll = computed(() => {
-      return scrollRef.value.Scroll;
+      return scrollRef.value.scroll;
     });
     const store = useStore();
     const playList = computed(() => store.state.playList);

@@ -122,6 +122,7 @@ import useCd from "./use-cd";
 import useLyric from "./use-lyric";
 import useMiddleInteractive from "./use-middle-interactive";
 import useAnimation from "./use-animation";
+import usePlayHistory from "./use-play-history";
 import ProgressBar from "./progress-bar";
 import { formatTime } from "../../assets/js/util";
 import { PLAY_MODE } from "../../assets/js/constant";
@@ -175,6 +176,7 @@ export default {
     } = useMiddleInteractive();
     const { cdWrapperRef, enter, afterEnter, leave, afterLeave } =
       useAnimation();
+    const { savePlay } = usePlayHistory();
     // computed
     const playIcon = computed(() => {
       return playing.value ? "icon-pause" : "icon-play";
@@ -280,6 +282,7 @@ export default {
       }
       songReady.value = true;
       playLyric();
+      savePlay(currentSong.value);
     }
     function error() {
       songReady.value = true;
@@ -367,6 +370,8 @@ export default {
       afterEnter,
       leave,
       afterLeave,
+      // playHistory
+      savePlay,
     };
   },
 };
