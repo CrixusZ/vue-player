@@ -1,13 +1,15 @@
 import axios from "axios";
-import asixo from "axios";
 
-const baseURL = "/";
+const baseURL =
+  process.env.NODE_ENV === "production"
+    ? "http://zengjiahao.com/vue-play"
+    : "/";
 const ERR_OK = 0;
 
 axios.defaults.baseURL = baseURL;
 
 export function get(url, params) {
-  return asixo
+  return axios
     .get(url, {
       params,
     })

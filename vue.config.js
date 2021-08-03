@@ -25,4 +25,6 @@ module.exports = {
       config.plugins.push(new BundleAnalyzerPlugin());
     }
   },
+  productionSourceMap: false,// 生产环境不能开sourcemap防止被查看源码
+  publicPath: process.env.NODE_ENV === "production" ? "/vue-player/" : "/",
 };
