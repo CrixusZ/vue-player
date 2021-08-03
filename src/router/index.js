@@ -6,6 +6,7 @@ import TopList from "@/views/top-list";
 import TopDetail from "@/views/top-detail";
 import SingerDetail from "@/views/singer-detail";
 import Album from "@/views/album";
+import User from "@/views/user-center";
 
 const routes = [
   {
@@ -51,6 +52,12 @@ const routes = [
         component: SingerDetail,
       },
     ],
+  },
+  {
+    path: "/user",
+    components: {
+      user: User, // 指定命名路由
+    },
   },
 ];
 

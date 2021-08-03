@@ -87,13 +87,13 @@ export default {
     const playHistory = computed(() => store.state.playHistory);
 
     watch(query, async () => {
-      await nextTick()
-      refreshScroll()
-    })
+      await nextTick();
+      refreshScroll();
+    });
     async function show() {
       visible.value = true;
-      await nextTick()
-      refreshScroll()
+      await nextTick();
+      refreshScroll();
     }
     function hide() {
       visible.value = false;
@@ -106,7 +106,7 @@ export default {
     }
     function selectSongBySuggest(song) {
       addSong(song);
-      saveSearch(query.value)
+      saveSearch(query.value);
     }
     function addSong(song) {
       store.dispatch("addSong", song);
@@ -116,7 +116,7 @@ export default {
       messageRef.value.show();
     }
     function refreshScroll() {
-      scrollRef.value.scroll.refresh()
+      scrollRef.value.scroll.refresh();
     }
     return {
       visible,

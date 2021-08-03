@@ -33,7 +33,7 @@ const mutations = {
   },
   setPlayHistory(state, songs) {
     state.playHistory = songs;
-  }
+  },
 };
 
 export default mutations;

@@ -14,10 +14,10 @@ export default function usePlayHistory() {
       },
       maxLen
     );
-    store.commit("setPlayHistory", songs)
+    store.commit("setPlayHistory", songs);
   }
 
   return {
     savePlay,
-  }
+  };
 }
