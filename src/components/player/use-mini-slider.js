@@ -1,4 +1,13 @@
-import { ref, onMounted, nextTick, onUnmounted, computed, watch } from "vue";
+import {
+  ref,
+  onMounted,
+  nextTick,
+  onUnmounted,
+  computed,
+  watch,
+  onActivated,
+  onDeactivated,
+} from "vue";
 import { useStore } from "vuex";
 import BScroll from "@better-scroll/core";
 import Slide from "@better-scroll/slide";
@@ -64,6 +73,15 @@ export default function useMiniSlider() {
     if (slider.value) {
       slider.value.destory();
     }
+  });
+  // onActivated, onDeactivated在使用keep-alive标签中有效，每次进入都会执行钩子中的函数
+  onActivated(() => {
+    slider.value.enable();
+    slider.value.refresh();
+  });
+
+  onDeactivated(() => {
+    slider.value.disable();
   });
   return {
     sliderWrapperRef,

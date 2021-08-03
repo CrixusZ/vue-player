@@ -1,6 +1,6 @@
 import BScroll from "@better-scroll/core";
 import ObserveDOM from "@better-scroll/observe-dom";
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, onActivated, onDeactivated } from "vue";
 
 BScroll.use(ObserveDOM);
 
@@ -18,8 +18,18 @@ export default function useScroll(wrapperRef, options, emit) {
       });
     }
   });
+  // 在keepalive里面不会有onUnmounted这个钩子
   onUnmounted(() => {
     scroll.value.destroy();
+  });
+
+  onActivated(() => {
+    scroll.value.enable();
+    scroll.value.refresh();
+  });
+
+  onDeactivated(() => {
+    scroll.value.disable();
   });
   return scroll;
 }
